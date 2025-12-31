@@ -45,10 +45,10 @@ const SellerAuth = () => {
         }
         // Store user type
         localStorage.setItem("user_type", "seller");
-        // Small delay to ensure cookie is set before redirect (important for production)
-        setTimeout(() => {
-          router.replace("/sellers");
-        }, 100);
+
+        // Refresh router to update server components with new cookie
+        router.refresh();
+        router.replace("/sellers");
       },
       onError: (error) => {
         toast.error(error.getFullMessage() || "Login failed. Please try again.");
