@@ -94,47 +94,27 @@ export default function Header({ bgClass = bgClassVal }: HeaderProps) {
           {/* Desktop Action Buttons / User Profile */}
           <div className="hidden md:flex items-center gap-4">
             {userData?.user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className="flex items-center gap-3 focus:outline-none"
+              <>
+                <Link
+                  href="/buyers/dashboard"
+                  className={`px-6 py-4 rounded-lg bg-inherit text-sm xl:text-base font-parkinsans font-semibold border transition-colors ${bgClass === bgClassVal
+                    ? "text-[#A8E959] border-[#A8E959]"
+                    : "text-[#144E42] border-[#144E42]"
+                    }`}
                 >
-                  <div className="flex flex-col items-end">
-                    <span className="text-sm font-bold font-parkinsans text-[#144E42] bg-white/80 px-2 rounded-md">
-                      {userData.user.username || userData.user.name.split(' ')[0]}
-                    </span>
-                  </div>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg border-2 border-white shadow-sm ${bgClass === bgClassVal ? "bg-[#A8E959] text-[#144E42]" : "bg-[#144E42] text-white"
-                    }`}>
-                    {getInitials(userData.user.username || userData.user.name)}
-                  </div>
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('auth_token');
+                    window.location.href = '/auth';
+                  }}
+                  className={`px-6 py-4 rounded-lg text-sm xl:text-base font-parkinsans font-semibold text-[#144E42] bg-[#A8E959] transition-colors ${bgClass === bgClassVal ? " border " : "border-none"
+                    }`}
+                >
+                  Sign Out
                 </button>
-
-                {/* Dropdown Menu */}
-                {isProfileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg py-2 z-50 border border-gray-100">
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm text-gray-500">Active User</p>
-                      <p className="text-sm font-bold text-[#144E42] truncate">
-                        {userData.user.name}
-                      </p>
-                      <p className="text-xs text-gray-400 truncate">
-                        {userData.user.email}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('auth_token');
-                        window.location.href = '/auth';
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
-                    >
-                      <span className="font-medium">Sign Out</span>
-                    </button>
-                  </div>
-                )}
-              </div>
+              </>
             ) : (
               <>
                 <Link
@@ -274,20 +254,43 @@ export default function Header({ bgClass = bgClassVal }: HeaderProps) {
 
           {/* Mobile Action Buttons */}
           <div className="flex flex-col gap-4 pt-6">
-            <Link
-              href="/auth"
-              onClick={closeMenu}
-              className="px-6 py-3 rounded-lg border-[#A8E959] bg-inherit text-center font-parkinsans font-semibold text-[#A8E959] border transition-colors"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/signup"
-              onClick={closeMenu}
-              className="px-6 py-3 rounded-lg bg-[#A8E959] text-center font-parkinsans font-semibold text-[#144E42] border transition-colors"
-            >
-              Create an Account
-            </Link>
+            {userData?.user ? (
+              <>
+                <Link
+                  href="/buyers/dashboard"
+                  onClick={closeMenu}
+                  className="px-6 py-3 rounded-lg border-[#A8E959] bg-inherit text-center font-parkinsans font-semibold text-[#A8E959] border transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('auth_token');
+                    window.location.href = '/auth';
+                  }}
+                  className="px-6 py-3 rounded-lg bg-[#A8E959] text-center font-parkinsans font-semibold text-[#144E42] border transition-colors"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth"
+                  onClick={closeMenu}
+                  className="px-6 py-3 rounded-lg border-[#A8E959] bg-inherit text-center font-parkinsans font-semibold text-[#A8E959] border transition-colors"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={closeMenu}
+                  className="px-6 py-3 rounded-lg bg-[#A8E959] text-center font-parkinsans font-semibold text-[#144E42] border transition-colors"
+                >
+                  Create an Account
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

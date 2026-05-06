@@ -8,11 +8,24 @@ import EarningsChart from "./EarningsChart";
 import RecentActivity from "./RecentActivity";
 import RecentRequestsTable from "./RecentRequestsTable";
 import OngoingOrdersTable from "./OngoingOrdersTable";
-import { useBuyerDashboard } from "@/hooks/use-buyers";
+// Dummy data will be used instead of API hook
 
 export default function DashboardView() {
-    const { data: apiResponse, isLoading, isError } = useBuyerDashboard();
-
+    // Static dummy data
+    const dummyData = {
+        stats: {
+            active_requests: 12,
+            new_offer_received: 24,
+            completed_orders: 8,
+        },
+        recent_activity: [
+            { id: 1, type: "login", date: "2023-01-01" },
+            { id: 2, type: "purchase", date: "2023-01-02" },
+        ],
+        recent_requests: [],
+        recent_orders: [],
+    };
+    const { stats, recent_activity: recentActivity, recent_requests: recentRequests, recent_orders: ongoingOrders } = dummyData;
     const earningsData = [
         { day: "Mon", amount: 4500 },
         { day: "Tue", amount: 6200 },
@@ -22,26 +35,7 @@ export default function DashboardView() {
         { day: "Sat", amount: 4800 },
         { day: "Sun", amount: 7500 },
     ];
-
-    if (isError) {
-        return (
-            <div className="w-full min-h-[400px] flex flex-col items-center justify-center p-8">
-                <p className="text-red-500 mb-4 font-parkinsans">Failed to load dashboard data.</p>
-                <button 
-                    onClick={() => window.location.reload()}
-                    className="px-6 py-2 bg-[#144E42] text-white rounded-lg"
-                >
-                    Retry
-                </button>
-            </div>
-        );
-    }
-
-    const dashboardData = apiResponse?.data;
-    const stats = dashboardData?.stats;
-    const recentActivity = dashboardData?.recent_activity || [];
-    const recentRequests = dashboardData?.recent_requests || [];
-    const ongoingOrders = dashboardData?.recent_orders || [];
+    const isLoading = false;
 
     return (
         <div className="w-full bg-white relative">
