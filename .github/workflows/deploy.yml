@@ -24,7 +24,7 @@ jobs:
       - name: Build Next.js App
         run: npm run build
 
-      - name: Prepare Standalone Files
+      - name: Prepare Standalone Deployment
         run: |
           mkdir deploy
 
@@ -33,18 +33,28 @@ jobs:
           mkdir -p deploy/.next
           cp -r .next/static deploy/.next/static
 
-          cp -r public deploy/public
+          if [ -d public ]; then
+            cp -r public deploy/public
+          fi
 
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
 
-          echo "${{ secrets.CPANEL_SSH_KEY }}" > ~/.ssh/id_ed25519
+          printf "%s" "${{ secrets.CPANEL_SSH_KEY }}" > ~/.ssh/id_ed25519
 
           chmod 600 ~/.ssh/id_ed25519
 
           ssh-keyscan -p ${{ secrets.CPANEL_PORT }} \
             ${{ secrets.CPANEL_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH Connection
+        run: |
+          ssh -p ${{ secrets.CPANEL_PORT }} \
+          -i ~/.ssh/id_ed25519 \
+          -o StrictHostKeyChecking=no \
+          ${{ secrets.CPANEL_USERNAME }}@${{ secrets.CPANEL_HOST }} \
+          "echo SSH_CONNECTED"
 
       - name: Deploy Files
         run: |
@@ -59,3 +69,6 @@ jobs:
           -i ~/.ssh/id_ed25519 \
           ${{ secrets.CPANEL_USERNAME }}@${{ secrets.CPANEL_HOST }} \
           "mkdir -p ~/tmp && touch ~/tmp/restart.txt"
+
+      - name: Deployment Complete
+        run: echo "Deployment completed successfully"
