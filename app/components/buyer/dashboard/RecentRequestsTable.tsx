@@ -22,7 +22,7 @@ export default function RecentRequestsTable({ requests }: RecentRequestsTablePro
             <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold text-black font-parkinsans">
-                        Recent Requests!!!!
+                        Recent Requests
                     </h2>
                     <Link
                         href="/buyers/buy-requests"
