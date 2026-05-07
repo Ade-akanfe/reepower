@@ -73,7 +73,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen w-full">
+    <main className="min-h-screen w-full bg-red-400">
       <Header />
       <Hero />
       <Features />

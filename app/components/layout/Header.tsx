@@ -48,7 +48,7 @@ export default function Header({ bgClass = bgClassVal }: HeaderProps) {
               className={`text-xl xl:text-2xl font-bold font-parkinsans ${bgClass === bgClassVal ? "text-white" : "text-[#144E42]"
                 }`}
             >
-              Arecyl!!
+              Arecyl
             </span>
           </Link>
 
