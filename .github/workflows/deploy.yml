@@ -1,0 +1,61 @@
+name: Deploy Next.js to cPanel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Next.js App
+        run: npm run build
+
+      - name: Prepare Standalone Files
+        run: |
+          mkdir deploy
+
+          cp -r .next/standalone/* deploy/
+
+          mkdir -p deploy/.next
+          cp -r .next/static deploy/.next/static
+
+          cp -r public deploy/public
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.CPANEL_SSH_KEY }}" > ~/.ssh/id_ed25519
+
+          chmod 600 ~/.ssh/id_ed25519
+
+          ssh-keyscan -p ${{ secrets.CPANEL_PORT }} \
+            ${{ secrets.CPANEL_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy Files
+        run: |
+          rsync -avz --delete \
+          -e "ssh -p ${{ secrets.CPANEL_PORT }} -i ~/.ssh/id_ed25519" \
+          deploy/ \
+          ${{ secrets.CPANEL_USERNAME }}@${{ secrets.CPANEL_HOST }}:/home/${{ secrets.CPANEL_USERNAME }}/frontend/
+
+      - name: Restart Node.js App
+        run: |
+          ssh -p ${{ secrets.CPANEL_PORT }} \
+          -i ~/.ssh/id_ed25519 \
+          ${{ secrets.CPANEL_USERNAME }}@${{ secrets.CPANEL_HOST }} \
+          "mkdir -p ~/tmp && touch ~/tmp/restart.txt"
